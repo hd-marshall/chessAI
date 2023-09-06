@@ -59,6 +59,7 @@ class ChessBoard():
     def createBoard(self):
         pygame.init()
 
+        fill = False
         width, height = 500, 500
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Drag and Drop Chess")
@@ -80,7 +81,8 @@ class ChessBoard():
                     color = self.white if (row + col) % 2 == 0 else self.black
                     pygame.draw.rect(self.screen, color, (col * self.square_size, row * self.square_size, self.square_size, self.square_size))
 
-            self.fillBoard(self.screen, self.square_size)
+            if fill == False:
+                self.fillBoard(self.screen, self.square_size)
             pygame.display.flip()
 
         pygame.quit()
