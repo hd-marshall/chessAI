@@ -7,18 +7,47 @@ class ChessBoard():
         self.createBoard()
 
     def fillBoard(self, screen, squareSize):
-        r1 = Rook("black")
-        r1_rect = r1.image.get_rect()
-        r1_rect.topleft = (7 * squareSize, 0 * squareSize)
+        for row in range(8):
+            for col in range(8):
+                piece = None
+                if row == 0:
+                    if col == 0 or col == 7:
+                        piece = Rook("black")
+                    elif col == 1 or col == 6:
+                        piece = Knight("black")
+                    elif col == 2 or col == 5:
+                        piece = Bishop("black")
+                    elif col == 3:
+                        piece = Queen("black")
+                    elif col == 4:
+                        piece = King("black")
+                elif row == 7:
+                    if col == 0 or col == 7:
+                        piece = Rook("white")
+                    elif col == 1 or col == 6:
+                        piece = Knight("white")
+                    elif col == 2 or col == 5:
+                        piece = Bishop("white")
+                    elif col == 3:
+                        piece = Queen("white")
+                    elif col == 4:
+                        piece = King("white")
+                elif row == 1:
+                    piece = Pawn("black")
+                elif row == 6:
+                    piece = Pawn("white")
 
-        screen.blit(r1.image, r1_rect.topleft)
+                if piece:
+                    piece_rect = piece.image.get_rect()
+                    piece_rect.topleft = (col * squareSize, row * squareSize)
+                    screen.blit(piece.image, piece_rect.topleft)
 
     def createBoard(self):
         pygame.init()
 
         width, height = 400, 400
         self.screen = pygame.display.set_mode((width, height))
-        pygame.display.set_caption("Chessboard")
+        pygame.display.set_caption("Drag and Drop Chess")
 
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
