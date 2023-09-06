@@ -59,12 +59,12 @@ class ChessBoard():
     def createBoard(self):
         pygame.init()
 
-        width, height = 400, 400
+        width, height = 500, 500
         self.screen = pygame.display.set_mode((width, height))
         pygame.display.set_caption("Drag and Drop Chess")
 
-        self.white = (255, 255, 255)
-        self.black = (0, 0, 0)
+        self.white = (255, 222, 173)
+        self.black = (160, 82, 45)
 
         self.rows, self.cols = 8, 8
         self.square_size = width // self.cols
