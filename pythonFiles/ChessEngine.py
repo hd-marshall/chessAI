@@ -1,7 +1,7 @@
 import pygame
 from pieces import *
 
-class ChessBoard():
+class GameState():
 
     def __init__(self):
         self.whiteToMove = True
