@@ -18,7 +18,7 @@ def loadImages():
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
-    p.display.set_caption("Drag and Drop Chess")
+    p.display.set_caption("Chess: The Game")
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
     gameState = ChessEngine.GameState()
@@ -41,7 +41,7 @@ def main():
                 else:
                     squareSelected = (clickRow, clickColumn)
                     playerClicks.append(squareSelected)
-                
+
                 if len(playerClicks) == 2:
                     pass
 
