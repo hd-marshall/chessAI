@@ -1,5 +1,4 @@
 import pygame
-from pieces import *
 
 class GameState():
 
