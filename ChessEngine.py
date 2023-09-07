@@ -16,6 +16,15 @@ class GameState():
         ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
         ]
 
+    def makeMove(self, move):
+        self.board[move.startRow][move.startColumn] = "--"
+        print("done")
+        self.board[move.endRow][move.endColumn] = move.pieceMoved
+        print("done")
+        self.moveLog.append(move)
+        print("done")
+        self.whiteToMove = not self.whiteToMove
+
 class Move():
 
     ranksToRows = {"1" : 7, "2" : 6, "3" : 5, "4" : 4,
@@ -26,15 +35,17 @@ class Move():
     columnsToFiles = {v : k for k, v in filesToColumns.items()}
 
     def __init__(self, startSquare, endSquare, board):
-        self.startRow = startSquare[0]
-        self.startColumn = startSquare[1]
-        self.endRow = endSquare[0]
-        self.endColumn = endSquare[1]
+        self.startRow = int(startSquare[0])
+        self.startColumn = int(startSquare[1])
+        self.endRow = int(endSquare[0])
+        self.endColumn = int(endSquare[1])
         self.pieceMoved = board[self.startRow][self.startColumn] 
         self.pieceMovedTo = board[self.endRow][self.endColumn]
+        print("done")
 
-    def movePiece(self, board):
-        if self.pieceMovedTo == "--":
-            self.pieceMoved = "--"
-            self.pieceMovedTo = 
+    def getChessNotation(self):
+        return self.getRankFile(self.startRow, self.startColumn) + self.getRankFile(self.endRow, self.endColumn)
 
+    def getRankFile(self, r, c):
+        return self.columnsToFiles[c] + self.rowsToRanks[r]
+    
