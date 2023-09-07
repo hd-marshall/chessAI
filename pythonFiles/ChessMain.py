@@ -21,7 +21,6 @@ def main():
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
     gameState = ChessEngine.GameState()
-    #print(gameState.board)
     loadImages()
 
     running = True
@@ -30,8 +29,27 @@ def main():
             if e.type == p.QUIT:
                 running = False
 
+        drawGameState(screen, gameState)
         clock.tick(MAX_FPS)
         p.display.flip()
+
+def drawGameState(screen, gameState):
+    drawBoard(screen)
+    drawPieces(screen, gameState.board)
+
+def drawBoard(screen):
+    white = (255, 253, 208)
+    black = (139, 69, 19)
+
+    boardColours = [p.Color(white), p.Color(black)]
+
+    for row in range(DIMENSION):
+        for column in range(DIMENSION):
+            colour = boardColours[((row + column) % 2)]
+            p.draw.rect(screen, colour, p.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+
+def drawPieces(screen, gameState):
+    pass
 
 if __name__ == "__main__":
     main()
