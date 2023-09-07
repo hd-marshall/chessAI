@@ -18,6 +18,7 @@ def loadImages():
 def main():
     p.init()
     screen = p.display.set_mode((WIDTH, HEIGHT))
+    p.display.set_caption("Drag and Drop Chess")
     clock = p.time.Clock()
     screen.fill(p.Color("white"))
     gameState = ChessEngine.GameState()
@@ -48,8 +49,12 @@ def drawBoard(screen):
             colour = boardColours[((row + column) % 2)]
             p.draw.rect(screen, colour, p.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
-def drawPieces(screen, gameState):
-    pass
+def drawPieces(screen, board):
+    for row in range(DIMENSION):
+        for column in range(DIMENSION):
+            piece = board[row][column]
+            if piece != "--":
+                screen.blit(IMAGES[piece], p.Rect(column * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
 
 if __name__ == "__main__":
     main()
