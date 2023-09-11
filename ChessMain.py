@@ -33,21 +33,26 @@ def main():
                 running = False
             elif e.type == p.MOUSEBUTTONDOWN:
                 location = p.mouse.get_pos()
-                clickRow = location[1] // SQUARE_SIZE
-                clickColumn = location[0] // SQUARE_SIZE
+                clickRow = int(location[1] // SQUARE_SIZE)
+                clickColumn = int(location[0] // SQUARE_SIZE)
                 if squareSelected == (clickRow, clickColumn):
                     squareSelected = ()
                     playerClicks = []
+                elif len(playerClicks) < 1 and gameState.board[clickRow][clickColumn] == "--":
+                    squareSelected = ()
                 else:
                     squareSelected = (clickRow, clickColumn)
                     playerClicks.append(squareSelected)
-
                 if len(playerClicks) == 2:
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gameState.board)
                     print(move.getChessNotation())
                     gameState.makeMove(move)
                     squareSelected = ()
                     playerClicks = []
+
+            elif e.type == p.KEYDOWN:
+                if e.key == p.K_z:
+                    gameState.undoMove()
 
         drawGameState(screen, gameState)
         clock.tick(MAX_FPS)
