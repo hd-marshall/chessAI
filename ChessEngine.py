@@ -16,16 +16,12 @@ class GameState():
 
     def checkColour(self, move):
         colourOfPiece = self.board[move.startRow][move.startColumn]
-        print(colourOfPiece[0])
 
         if self.whiteToMove == True and colourOfPiece[0] == "w":
-            print("y")
             return True
         elif self.whiteToMove == False and colourOfPiece[0] == "b":
-            print("y")
             return True
         else:
-            print("n")
             return False
 
     def makeMove(self, move):
