@@ -14,12 +14,18 @@ class GameState():
         ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
         ]
 
-    def checkColour(self, move):
-        colourOfPiece = self.board[move.startRow][move.startColumn]
+    def checkTeammate(self, move):
+        if move.pieceMoved[0] == move.pieceMovedTo[0]:
+            print("Y")
+            return False
 
-        if self.whiteToMove == True and colourOfPiece[0] == "w":
+    def checkColour(self, move):
+        if self.checkTeammate(move) == False:
+            return False
+
+        if self.whiteToMove == True and move.pieceMoved[0] == "w":
             return True
-        elif self.whiteToMove == False and colourOfPiece[0] == "b":
+        elif self.whiteToMove == False and move.pieceMoved[0] == "b":
             return True
         else:
             return False
