@@ -16,7 +16,6 @@ class GameState():
 
     def checkTeammate(self, move):
         if move.pieceMoved[0] == move.pieceMovedTo[0]:
-            print("Y")
             return False
 
     def checkColour(self, move):
@@ -24,11 +23,56 @@ class GameState():
             return False
 
         if self.whiteToMove == True and move.pieceMoved[0] == "w":
-            return True
+            return self.whatPiece(move)
         elif self.whiteToMove == False and move.pieceMoved[0] == "b":
-            return True
+            return self.whatPiece(move)
         else:
             return False
+        
+    def whatPiece(self, move):
+        if move.pieceMoved[1] == "P":
+            return self.pawnMove(move)
+        elif move.pieceMoved[1] == "R":
+            pass
+        elif move.pieceMoved[1] == "N":
+            pass
+        elif move.pieceMoved[1] == "B":
+            pass
+        elif move.pieceMoved[1] == "Q":
+            pass
+        elif move.pieceMoved[1] == "K":
+            pass
+
+    def pawnMove(self, move):
+        validMove = False
+        pawnColour = move.pieceMoved[0]
+
+        if pawnColour == "w":
+            if move.startRow == 6:
+                if move.startRow - 2 == move.endRow and move.startColumn == move.endColumn:
+                    validMove = True     
+            if move.startRow - 1 == move.endRow and move.startColumn == move.endColumn:
+                validMove = True
+            if move.startRow - 1 == move.endRow and move.startColumn - 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "b":
+                validMove = True
+            elif move.startRow - 1 == move.endRow and move.startColumn + 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "b":
+                validMove = True
+
+        if pawnColour == "b":
+            if move.startRow == 1:
+                if move.startRow + 2 == move.endRow and move.startColumn == move.endColumn:
+                    validMove = True     
+            if move.startRow + 1 == move.endRow and move.startColumn == move.endColumn:
+                validMove = True
+            if move.startRow + 1 == move.endRow and move.startColumn - 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "w":
+                validMove = True
+            elif move.startRow + 1 == move.endRow and move.startColumn + 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "w":
+                validMove = True
+
+        return validMove
+    
+    def rookMove(self, move):
+        pass
 
     def makeMove(self, move):
         if self.checkColour(move) == True:
@@ -66,10 +110,10 @@ class Move():
         self.endColumn = int(endSquare[1])
         self.pieceMoved = board[self.startRow][self.startColumn] 
         self.pieceMovedTo = board[self.endRow][self.endColumn]
+        self.pieceName = board[self.startRow][self.startColumn][1]
 
     def getChessNotation(self):
         return self.getRankFile(self.startRow, self.startColumn) + self.getRankFile(self.endRow, self.endColumn)
 
     def getRankFile(self, r, c):
         return self.columnsToFiles[c] + self.rowsToRanks[r]
-    
