@@ -3,7 +3,7 @@ class GameState():
     def __init__(self):
         self.whiteToMove = True
         self.moveLog = []
-        self.board = [
+        """self.board = [
         ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
         ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -12,6 +12,16 @@ class GameState():
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
         ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
+        ]"""
+        self.board = [
+        ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["wP", "wP", "--", "wP", "wP", "wP", "--", "wP"],
+        ["wR", "--", "--", "wQ", "wK", "--", "--", "wR"]
         ]
 
     def checkTeammate(self, move):
@@ -33,7 +43,7 @@ class GameState():
         if move.pieceMoved[1] == "P":
             return self.pawnMove(move)
         elif move.pieceMoved[1] == "R":
-            pass
+            return self.rookMove(move)
         elif move.pieceMoved[1] == "N":
             pass
         elif move.pieceMoved[1] == "B":
@@ -72,7 +82,28 @@ class GameState():
         return validMove
     
     def rookMove(self, move):
-        pass
+        validMove = False
+        
+        if move.startRow == move.endRow:
+            print("row")
+            for column in range(6):
+                if self.board[move.startRow][move.startColumn + column + 1][0] == "w":
+                    validMove = False
+                    break
+                else:
+                    validMove = True
+
+        if move.startColumn == move.endColumn:
+            print("col")
+            for row in range(6):
+                if self.board[move.startRow - row - 1][move.startColumn][0] == "w":
+                    validMove = False
+                    break
+                else:
+                    validMove = True
+
+        return validMove
+            
 
     def makeMove(self, move):
         if self.checkColour(move) == True:
