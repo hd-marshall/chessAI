@@ -3,7 +3,7 @@ class GameState():
     def __init__(self):
         self.whiteToMove = True
         self.moveLog = []
-        """self.board = [
+        self.board = [
         ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
         ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -12,105 +12,15 @@ class GameState():
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
         ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
-        ]"""
-        self.board = [
-        ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-        ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
-        ["--", "--", "--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "--", "--", "--", "--"],
-        ["wP", "wP", "--", "wP", "wP", "wP", "--", "wP"],
-        ["wR", "--", "--", "wQ", "wK", "--", "--", "wR"]
         ]
-
-    def checkTeammate(self, move):
-        if move.pieceMoved[0] == move.pieceMovedTo[0]:
-            return False
-
-    def checkColour(self, move):
-        if self.checkTeammate(move) == False:
-            return False
-
-        if self.whiteToMove == True and move.pieceMoved[0] == "w":
-            return self.whatPiece(move)
-        elif self.whiteToMove == False and move.pieceMoved[0] == "b":
-            return self.whatPiece(move)
-        else:
-            return False
-        
-    def whatPiece(self, move):
-        if move.pieceMoved[1] == "P":
-            return self.pawnMove(move)
-        elif move.pieceMoved[1] == "R":
-            return self.rookMove(move)
-        elif move.pieceMoved[1] == "N":
-            pass
-        elif move.pieceMoved[1] == "B":
-            pass
-        elif move.pieceMoved[1] == "Q":
-            pass
-        elif move.pieceMoved[1] == "K":
-            pass
-
-    def pawnMove(self, move):
-        validMove = False
-        pawnColour = move.pieceMoved[0]
-
-        if pawnColour == "w":
-            if move.startRow == 6:
-                if move.startRow - 2 == move.endRow and move.startColumn == move.endColumn:
-                    validMove = True     
-            if move.startRow - 1 == move.endRow and move.startColumn == move.endColumn:
-                validMove = True
-            if move.startRow - 1 == move.endRow and move.startColumn - 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "b":
-                validMove = True
-            elif move.startRow - 1 == move.endRow and move.startColumn + 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "b":
-                validMove = True
-
-        if pawnColour == "b":
-            if move.startRow == 1:
-                if move.startRow + 2 == move.endRow and move.startColumn == move.endColumn:
-                    validMove = True     
-            if move.startRow + 1 == move.endRow and move.startColumn == move.endColumn:
-                validMove = True
-            if move.startRow + 1 == move.endRow and move.startColumn - 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "w":
-                validMove = True
-            elif move.startRow + 1 == move.endRow and move.startColumn + 1 == move.endColumn and self.board[move.endRow][move.endColumn][0] == "w":
-                validMove = True
-
-        return validMove
-    
-    def rookMove(self, move):
-        validMove = False
-        
-        if move.startRow == move.endRow:
-            print("row")
-            for column in range(6):
-                if self.board[move.startRow][move.startColumn + column + 1][0] == "w":
-                    validMove = False
-                    break
-                else:
-                    validMove = True
-
-        if move.startColumn == move.endColumn:
-            print("col")
-            for row in range(6):
-                if self.board[move.startRow - row - 1][move.startColumn][0] == "w":
-                    validMove = False
-                    break
-                else:
-                    validMove = True
-
-        return validMove
-            
+        self.moveFunctions = {"P" : self.getPawnMoves, "R" : self.getRookMoves, "N" : self.getKnightMoves, 
+                              "B" : self.getBishopMoves, "Q" : self.getQueenMoves, "K" : self.getKingMoves}
 
     def makeMove(self, move):
-        if self.checkColour(move) == True:
-            self.board[move.startRow][move.startColumn] = "--"
-            self.board[move.endRow][move.endColumn] = move.pieceMoved
-            self.moveLog.append(move)
-            self.whiteToMove = not self.whiteToMove
+        self.board[move.startRow][move.startColumn] = "--"
+        self.board[move.endRow][move.endColumn] = move.pieceMoved
+        self.moveLog.append(move)
+        self.whiteToMove = not self.whiteToMove
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -119,20 +29,69 @@ class GameState():
             self.board[move.endRow][move.endColumn] = move.pieceMovedTo
             self.whiteToMove = not self.whiteToMove
 
-    def validMoves(self):
+    def getValidMoves(self):
         return self.getAllPossibleMoves()
 
     def getAllPossibleMoves(self):
+        moves = []
+
+        for r in range(len(self.board)):
+            for c in range(len(self.board[r])):
+                turn = self.board[r][c][0]
+                if (turn == "w" and self.whiteToMove) or (turn == "b" and not self.whiteToMove):
+                    piece = self.board[r][c][1]
+                    self.moveFunctions[piece](r, c, moves)
+        return moves
+
+    def getPawnMoves(self, r, c, moves):
+        if self.whiteToMove:
+            if self.board[r - 1][c] == "--":
+                moves.append(Move((r, c), (r - 1, c), self.board))
+                if r == 6 and self.board[r - 2][c] == "--":
+                    moves.append(Move((r, c), (r - 2, c), self.board))
+            if c - 1 >= 0:
+                if self.board[r - 1][c - 1][0] == "b":
+                    moves.append(Move((r, c), (r - 1, c - 1), self.board))
+            if c + 1 <= len(self.board) - 1:
+                if self.board[r - 1][c + 1][0] == "b":
+                    moves.append(Move((r, c), (r - 1, c + 1), self.board))
+
+        else:
+            if self.board[r + 1][c] == "--":
+                moves.append(Move((r, c), (r + 1, c), self.board))
+                if r == 1 and self.board[r + 2][c] == "--":
+                    moves.append(Move((r, c), (r + 2, c), self.board))
+            if c - 1 >= 0:
+                if self.board[r - 1][c - 1][0] == "b":
+                    moves.append(Move((r, c), (r + 1, c - 1), self.board))
+            if c + 1 <= len(self.board) - 1:
+                if self.board[r - 1][c + 1][0] == "b":
+                    moves.append(Move((r, c), (r + 1, c + 1), self.board))
+
+    def getRookMoves(self, r, c, moves):
         pass
+
+    def getKnightMoves(self, r, c, moves):
+        pass
+
+    def getBishopMoves(self, r, c, moves):
+        pass
+
+    def getQueenMoves(self, r, c, moves):
+        pass
+
+    def getKingMoves(self, r, c, moves):
+        pass
+
 
 class Move():
 
     ranksToRows = {"1" : 7, "2" : 6, "3" : 5, "4" : 4,
                    "5" : 3, "6" : 2, "7" : 1, "8" : 0}
-    rowsToRanks = {v : k for k, v in ranksToRows.items()}
+    rsToRanks = {v : k for k, v in ranksToRows.items()}
     filesToColumns = {"a" : 0, "b" : 1, "c" : 2, "d" : 3, 
                       "e" : 4, "f" : 5, "g" : 6, "h" : 7}
-    columnsToFiles = {v : k for k, v in filesToColumns.items()}
+    csToFiles = {v : k for k, v in filesToColumns.items()}
 
     def __init__(self, startSquare, endSquare, board):
         self.startRow = int(startSquare[0])
@@ -142,9 +101,15 @@ class Move():
         self.pieceMoved = board[self.startRow][self.startColumn] 
         self.pieceMovedTo = board[self.endRow][self.endColumn]
         self.pieceName = board[self.startRow][self.startColumn][1]
+        self.moveID = self.startRow * 1000 + self.endColumn * 100 + self.endRow * 10 + self.endColumn
+
+    def __eq__(self, other):
+        if isinstance(other, Move):
+            return self.moveID == other.moveID
+        return False
 
     def getChessNotation(self):
         return self.getRankFile(self.startRow, self.startColumn) + self.getRankFile(self.endRow, self.endColumn)
 
     def getRankFile(self, r, c):
-        return self.columnsToFiles[c] + self.rowsToRanks[r]
+        return self.csToFiles[c] + self.rsToRanks[r]
