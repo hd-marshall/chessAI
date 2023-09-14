@@ -1,4 +1,5 @@
 class GameState():
+    #
 
     def __init__(self):
         self.whiteToMove = True
