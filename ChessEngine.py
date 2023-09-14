@@ -1,14 +1,14 @@
 class GameState():
 
     def __init__(self):
-        self.whiteToMove = False
+        self.whiteToMove = True
         self.moveLog = []
         self.board = [
         ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
         ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
-        ["--", "--", "--", "--", "bB", "--", "--", "--"],
-        ["--", "--", "wQ", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
+        ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
         ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
@@ -74,7 +74,7 @@ class GameState():
 
         for dr, dc in directions:
             row, column = r + dr, c + dc
-            while 0 <= row < 8 and 0 <= column < 8:
+            while 0 <= row < len(self.board) and 0 <= column < len(self.board):
                 if self.board[row][column] == "--":
                     moves.append(Move((r, c), (row, column), self.board))
                 elif self.board[row][column][0] == turnTake:
@@ -86,7 +86,14 @@ class GameState():
                 column += dc
 
     def getKnightMoves(self, r, c, moves):
-        pass
+        directions = [(-2, 1), (-2, -1), (2, 1), (2, -1), (1, 2), (-1, 2), (1, -2), (-1, -2)]
+        turnTake = "b" if self.whiteToMove else "w"
+
+        for dr, dc in directions:
+            row, column = r + dr, c + dc
+            if 0 <= row < len(self.board) and 0 <= column < len(self.board):
+                if self.board[row][column] == "--" or self.board[row][column][0] == turnTake:
+                    moves.append(Move((r, c), (row, column), self.board))
 
     def getBishopMoves(self, r, c, moves):
         directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
@@ -94,7 +101,7 @@ class GameState():
 
         for dr, dc in directions:
             row, column = r + dr, c + dc
-            while 0 <= row < 8 and 0 <= column < 8:
+            while 0 <= row < len(self.board) and 0 <= column < len(self.board):
                 if self.board[row][column] == "--":
                     moves.append(Move((r, c), (row, column), self.board))
                 elif self.board[row][column][0] == turnTake:
@@ -111,7 +118,7 @@ class GameState():
 
         for dr, dc in directions:
             row, column = r + dr, c + dc
-            while 0 <= row < 8 and 0 <= column < 8:
+            while 0 <= row < len(self.board) and 0 <= column < len(self.board):
                 if self.board[row][column] == "--":
                     moves.append(Move((r, c), (row, column), self.board))
                 elif self.board[row][column][0] == turnTake:
@@ -123,12 +130,14 @@ class GameState():
                 column += dc
 
     def getKingMoves(self, r, c, moves):
-        directions = [(2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (-1, 2), (1, -2), (-1, -2)]
+        directions = [(-1, 0), (1, 0), (0, 1), (0, -1), (-1, 1), (-1, -1), (1, 1), (1, -1)]
         turnTake = "b" if self.whiteToMove else "w"
-        
-        for dr, dc in directions:
-            
 
+        for dr, dc in directions:
+            row, column = r + dr, c + dc
+            if 0 <= row < len(self.board) and 0 <= column < len(self.board):
+                if self.board[row][column] == "--" or self.board[row][column][0] == turnTake:
+                    moves.append(Move((r, c), (row, column), self.board))
 
 class Move():
 
