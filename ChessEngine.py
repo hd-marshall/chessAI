@@ -40,7 +40,27 @@ class GameState():
                 self.blackKingLocation = (move.startRow, move.startColumn)
 
     def getValidMoves(self):
-        return self.getAllPossibleMoves()
+        moves = self.getAllPossibleMoves()
+        for i in range(len(moves) - 1, -1, -1):
+            self.makeMove(moves[i])
+
+        return moves
+    
+    def inCheck(self):
+        if self.whiteToMove:
+            return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
+        else:
+            return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
+
+    def squareUnderAttack(self, r, c):
+        self.whiteToMove = not self.whiteToMove
+        oppMoves = self.getAllPossibleMoves()
+        for move in oppMoves:
+            if move.endRow == r and move.endCol == c:
+                self.whiteToMove = not self.whiteToMove
+                return True
+        self.whiteToMove = not self.whiteToMove
+        return False
 
     def getAllPossibleMoves(self):
         moves = []
