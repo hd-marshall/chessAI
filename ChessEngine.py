@@ -1,5 +1,4 @@
 class GameState():
-    #
 
     def __init__(self):
         self.whiteToMove = True
@@ -97,7 +96,7 @@ class GameState():
                     moves.append(Move((r, c), (row, column), self.board))
 
     def getBishopMoves(self, r, c, moves):
-        directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+        directions = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
         turnTake = "b" if self.whiteToMove else "w"
 
         for dr, dc in directions:
@@ -129,6 +128,9 @@ class GameState():
                     break
                 row += dr
                 column += dc
+
+        #self.getRookMoves(r, c, moves)
+        #self.getRookMoves(r, c, moves)
 
     def getKingMoves(self, r, c, moves):
         directions = [(-1, 0), (1, 0), (0, 1), (0, -1), (-1, 1), (-1, -1), (1, 1), (1, -1)]

@@ -52,9 +52,10 @@ def main():
                     if move in validMoves:
                         gameState.makeMove(move)
                         moveMade = True
-                    squareSelected = ()
-                    playerClicks = []
-
+                        squareSelected = ()
+                        playerClicks = []
+                    else: 
+                       playerClicks = [squareSelected]
             elif e.type == p.KEYDOWN:
                 if e.key == p.K_z:
                     gameState.undoMove()
