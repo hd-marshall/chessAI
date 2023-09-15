@@ -1,8 +1,6 @@
 class GameState():
 
     def __init__(self):
-        self.whiteToMove = True
-        self.moveLog = []
         self.board = [
         ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
         ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
@@ -15,12 +13,20 @@ class GameState():
         ]
         self.moveFunctions = {"P" : self.getPawnMoves, "R" : self.getRookMoves, "N" : self.getKnightMoves, 
                               "B" : self.getBishopMoves, "Q" : self.getQueenMoves, "K" : self.getKingMoves}
+        self.whiteToMove = True
+        self.moveLog = []
+        self.whiteKingLocation = (7, 4)
+        self.blackKingLocation = (0, 4)
 
     def makeMove(self, move):
         self.board[move.startRow][move.startColumn] = "--"
         self.board[move.endRow][move.endColumn] = move.pieceMoved
         self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
+        if move.pieceMoved == "wK":
+            self.whiteKingLocation = (move.endRow, move.endColumn)
+        elif move.pieceMoved == "bK":
+            self.blackKingLocation = (move.endRow, move.endColumn)
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -28,6 +34,10 @@ class GameState():
             self.board[move.startRow][move.startColumn] = move.pieceMoved
             self.board[move.endRow][move.endColumn] = move.pieceMovedTo
             self.whiteToMove = not self.whiteToMove
+            if move.pieceMoved == "wK":
+                self.whiteKingLocation = (move.startRow, move.startColumn)
+            elif move.pieceMoved == "bK":
+                self.blackKingLocation = (move.startRow, move.startColumn)
 
     def getValidMoves(self):
         return self.getAllPossibleMoves()
