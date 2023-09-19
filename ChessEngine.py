@@ -59,11 +59,10 @@ class GameState():
     def squareUnderAttack(self, r, c):
         self.whiteToMove = not self.whiteToMove
         oppMoves = self.getAllPossibleMoves()
-        for move in oppMoves:
-            if move.endRow == r and move.endCol == c:
-                self.whiteToMove = not self.whiteToMove
-                return True
         self.whiteToMove = not self.whiteToMove
+        for move in oppMoves:
+            if move.endRow == r and move.endColumn == c:
+                return True
         return False
 
     def getAllPossibleMoves(self):
