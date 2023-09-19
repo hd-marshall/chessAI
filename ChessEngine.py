@@ -17,6 +17,8 @@ class GameState():
         self.moveLog = []
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
+        self.checkMate = False
+        self.slatemate = False
 
     def makeMove(self, move):
         self.board[move.startRow][move.startColumn] = "--"
@@ -48,6 +50,15 @@ class GameState():
                 moves.remove(moves[i])
             self.whiteToMove = not self.whiteToMove
             self.undoMove()    
+        if len(moves) == 0:
+            if self.inCheck():
+                self.checkMate = True
+            else:
+                self.stalemate = True
+        else:
+            self.checkMate = False
+            self.stalemate = False
+
         return moves
     
     def inCheck(self):
@@ -146,7 +157,7 @@ class GameState():
                 column += dc
 
     def getQueenMoves(self, r, c, moves):
-        directions = [(1, 1), (1, -1), (-1, 1), (-1, -1), (0, 1), (0, -1), (1, 0), (-1, 0)]
+        """directions = [(1, 1), (1, -1), (-1, 1), (-1, -1), (0, 1), (0, -1), (1, 0), (-1, 0)]
         turnTake = "b" if self.whiteToMove else "w"
 
         for dr, dc in directions:
@@ -160,10 +171,10 @@ class GameState():
                 else:
                     break
                 row += dr
-                column += dc
+                column += dc"""
 
-        #self.getRookMoves(r, c, moves)
-        #self.getRookMoves(r, c, moves)
+        self.getRookMoves(r, c, moves)
+        self.getRookMoves(r, c, moves)
 
     def getKingMoves(self, r, c, moves):
         directions = [(-1, 0), (1, 0), (0, 1), (0, -1), (-1, 1), (-1, -1), (1, 1), (1, -1)]
