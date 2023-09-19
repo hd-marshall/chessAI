@@ -2,8 +2,8 @@ class GameState():
 
     def __init__(self):
         self.board = [
-        ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-        ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+        ["bR", "bN", "bB", "--", "bK", "bB", "bN", "bR"],
+        ["bP", "bP", "bP", "wP", "bP", "bP", "bP", "bP"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -29,6 +29,7 @@ class GameState():
             self.whiteKingLocation = (move.endRow, move.endColumn)
         elif move.pieceMoved == "bK":
             self.blackKingLocation = (move.endRow, move.endColumn)
+        self.promotePawn(move.endRow, move.endColumn)
 
     def undoMove(self):
         if len(self.moveLog) != 0:
@@ -111,6 +112,18 @@ class GameState():
             if c + 1 <= len(self.board) - 1:
                 if self.board[r - 1][c + 1][0] == "b":
                     moves.append(Move((r, c), (r + 1, c + 1), self.board))
+
+    def promotePawn(self, r, c):
+        colour = self.board[r][c][0]
+        piece = self.board[r][c][1]
+
+        if colour == "w" and r == 0:
+            if piece == "P":
+                self.board[r][c] = "wQ"
+
+        if colour == "b" and r == 7:
+            if piece == "P":
+                self.board[r][c] = "bQ"
 
     def getRookMoves(self, r, c, moves):
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
