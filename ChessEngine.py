@@ -2,8 +2,8 @@ class GameState():
 
     def __init__(self):
         self.board = [
-        ["bR", "bN", "bB", "--", "bK", "bB", "bN", "bR"],
-        ["bP", "bP", "bP", "wP", "bP", "bP", "bP", "bP"],
+        ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+        ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
         ["--", "--", "--", "--", "--", "--", "--", "--"],
@@ -107,10 +107,10 @@ class GameState():
                 if r == 1 and self.board[r + 2][c] == "--":
                     moves.append(Move((r, c), (r + 2, c), self.board))
             if c - 1 >= 0:
-                if self.board[r - 1][c - 1][0] == "b":
+                if self.board[r + 1][c - 1][0] == "w":
                     moves.append(Move((r, c), (r + 1, c - 1), self.board))
             if c + 1 <= len(self.board) - 1:
-                if self.board[r - 1][c + 1][0] == "b":
+                if self.board[r + 1][c + 1][0] == "w":
                     moves.append(Move((r, c), (r + 1, c + 1), self.board))
 
     def promotePawn(self, r, c):
@@ -129,7 +129,7 @@ class GameState():
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         turnTake = "b" if self.whiteToMove else "w"
 
-        for dr, dc in directions:
+        for dr, dc in directions:   
             row, column = r + dr, c + dc
             while 0 <= row < len(self.board) and 0 <= column < len(self.board):
                 if self.board[row][column] == "--":
