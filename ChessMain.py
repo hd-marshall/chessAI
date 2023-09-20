@@ -1,4 +1,5 @@
 import pygame as p
+import pygame.mixer as pm
 import ChessEngine
 
 WIDTH, HEIGHT = 512, 512
@@ -17,6 +18,11 @@ def loadImages():
 
 def main():
     p.init()
+    pm.init()
+    clicks = pm.Sound("python/chessAI/sounds/click1.wav")
+    clicksError = pm.Sound("python/chessAI/sounds/click2Error.wav")
+    clicks.set_volume(0.5)
+    clicksError.set_volume(0.5)
     screen = p.display.set_mode((WIDTH, HEIGHT))
     p.display.set_caption("Chess: The Game")
     clock = p.time.Clock()
@@ -43,9 +49,11 @@ def main():
                     playerClicks = []
                 elif len(playerClicks) < 1 and gameState.board[clickRow][clickColumn] == "--":
                     squareSelected = ()
+                    clicksError.play()
                 else:
                     squareSelected = (clickRow, clickColumn)
                     playerClicks.append(squareSelected)
+                    clicks.play()
                 if len(playerClicks) == 2:
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gameState.board)
                     print(move.getChessNotation())
