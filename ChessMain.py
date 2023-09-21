@@ -47,6 +47,7 @@ def main():
                 if squareSelected == (clickRow, clickColumn):
                     squareSelected = ()
                     playerClicks = []
+                    clicksError.play()
                 elif len(playerClicks) < 1 and gameState.board[clickRow][clickColumn] == "--":
                     squareSelected = ()
                     clicksError.play()
