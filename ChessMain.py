@@ -1,3 +1,4 @@
+import os
 import pygame as p
 import pygame.mixer as pm
 import ChessEngine
@@ -11,7 +12,7 @@ IMAGES = {}
 def loadImages():
     pieces = ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR", "bP", "wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR", "wP"]
     for piece in pieces:
-        image_path = "python/chessAI/images/" + piece + ".png"
+        image_path = "/Users/harrymarshall/Developer/python/chessAI/images/" + piece + ".png"
         image = p.image.load(image_path)
         image = p.transform.scale(image, (SQUARE_SIZE, SQUARE_SIZE))
         IMAGES[piece] = image
@@ -19,8 +20,8 @@ def loadImages():
 def main():
     p.init()
     pm.init()
-    clicks = pm.Sound("python/chessAI/sounds/click1.wav")
-    clicksError = pm.Sound("python/chessAI/sounds/click2Error.wav")
+    clicks = pm.Sound("/Users/harrymarshall/Developer/python/chessAI/sounds/click1.wav")
+    clicksError = pm.Sound("/Users/harrymarshall/Developer/python/chessAI/sounds/click2Error.wav")
     clicks.set_volume(0.5)
     clicksError.set_volume(0.5)
     screen = p.display.set_mode((WIDTH, HEIGHT))
