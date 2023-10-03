@@ -1,5 +1,11 @@
 class GameState():
 
+    #Bishops move wrong sometimes but are on correct squares.
+    #When in check pieces move wrong or cant take at all.
+
+    #Pieces when in check will jump and not move correctly sometimes not allowing the game to flow properly. The lack of a logical intregrity in the piece move function may be leaking into
+    #the inCheck() and getValidMoves() functions.
+
     def __init__(self):
         self.board = [
         ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
