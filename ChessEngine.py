@@ -54,28 +54,42 @@ class GameState():
             elif move.pieceMoved == "bK":
                 self.blackKingLocation = (move.startRow, move.startColumn)
 
-    def getValidMoves(self):
-
-
-        """ 
-        moves = self.getAllPossibleMoves()
-        for i in range(len(moves) - 1, -1, -1):
-            self.makeMove(moves[i])
-            self.whiteToMove = not self.whiteToMove
-            if self.inCheck():
-                moves.remove(moves[i])
-            self.whiteToMove = not self.whiteToMove
-            self.undoMove()    
-        if len(moves) == 0:
-            if self.inCheck():
-                self.checkMate = True
-            else:
-                self.stalemate = True
+    def getValidMoves(self): 
+        moves = []
+        self.inCheck, self.pins, self.checks = self.checkForPinsAndChecks()
+        if self.whiteToMove:
+            kingRow = self.whiteKingLocation[0]
+            kingCol = self.whiteKingLocation[1]
         else:
-            self.checkMate = False
-            self.stalemate = False
+            kingRow = self.blackKingLocation[0]
+            kingCol = self.blackKingLocation[1]
+        if self.inCheck:
+            if len(self.checks) == 1:
+                moves = self.getAllPossibleMoves()
+                check = self.checks[0]
+                checkRow = check[0]
+                checkCol = check[1]
+                pieceChecking = self.board[checkRow][checkCol]
+                validSquares = []
 
-        return moves"""
+                if pieceChecking[1] == 'N':
+                    validSquares = [(checkRow, checkCol)]
+                else:
+                    for i in range(1, 8):
+                        validSquare = (kingRow + check[2] * i, kingCol + check[3] * i)
+                        validSquares.append(validSquare)
+                        if validSquare[0] == checkRow and validSquare[1] == checkCol:
+                            break
+                for i in range(len(moves) - 1, -1, -1):
+                    if moves[i].pieceMoved[1] != 'K':
+                        if not (moves[i].endRow, moves[i].endCol) in validSquares:
+                            moves.remove(moves[i])
+            else: #double check, king has to move
+                self.getKnightMoves(kingRow, kingCol, moves)
+        else: #not in check so all moves are okay
+            moves = self.getAllPossibleMoves()
+
+        return moves
 
     def checkForPinsAndChecks(self):
         pins = []
@@ -120,7 +134,19 @@ class GameState():
                                     pins.append(possiblePin)
                             else: #enemy piece not applying check
                                 break
-                        
+                else:
+                    break
+        
+        knightMoves = ((-2, 1), (-2, -1), (2, 1), (2, -1), (1, 2), (-1, 2), (1, -2), (-1, -2))
+        for m in knightMoves:
+            endRow = startRow + m[0]
+            endCol = startCol + m[1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] == enemyColour and endPiece[1] == 'N':
+                    inCheck = True
+                    checks.append((endRow, endCol, m[0], m[1]))
+        return inCheck, pins, checks
 
     def inCheck(self):
         if self.whiteToMove:
