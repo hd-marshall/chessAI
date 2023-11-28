@@ -1,10 +1,10 @@
 class GameState():
 
-    #Bishops move wrong sometimes but are on correct squares.
-    #When in check pieces move wrong or cant take at all.
+    # ! Bishops move wrong sometimes but are on correct squares.
+    # ! When in check pieces move wrong or cant take at all.
 
-    #Pieces when in check will jump and not move correctly sometimes not allowing the game to flow properly. The lack of a logical intregrity in the piece move function may be leaking into
-    #the inCheck() and getValidMoves() functions.
+    # TODO: Pieces when in check will jump and not move correctly sometimes not allowing the game to flow properly. The lack of a logical intregrity in the piece move function may be leaking into
+    # TODO: the inCheck() and getValidMoves() functions.
 
     def __init__(self):
         self.board = [
@@ -21,11 +21,16 @@ class GameState():
                               "B" : self.getBishopMoves, "Q" : self.getQueenMoves, "K" : self.getKingMoves}
         self.whiteToMove = True
         self.moveLog = []
+        
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
-        #self.inCheck = False
+        
+        self.inCheck = False
         self.checkMate = False
-        self.slatemate = False
+        self.stalemate = False
+
+        self.pins = []
+        self.checks = []
 
     def makeMove(self, move):
         self.board[move.startRow][move.startColumn] = "--"
@@ -50,6 +55,9 @@ class GameState():
                 self.blackKingLocation = (move.startRow, move.startColumn)
 
     def getValidMoves(self):
+
+
+        """ 
         moves = self.getAllPossibleMoves()
         for i in range(len(moves) - 1, -1, -1):
             self.makeMove(moves[i])
@@ -67,8 +75,53 @@ class GameState():
             self.checkMate = False
             self.stalemate = False
 
-        return moves
-    
+        return moves"""
+
+    def checkForPinsAndChecks(self):
+        pins = []
+        checks = []
+        inCheck = False
+        if self.whiteToMove:
+            enemyColour = "b"
+            allyColour = "w"
+            startRow = self.whiteKingLocation[0]
+            startCol  = self.whiteKingLocation[1]
+        else:
+            enemyColour = "w"
+            allyColour = "b"
+            startRow = self.blackKingLocation[0]
+            startCol  = self.blackKingLocation[1]
+
+            directions = ((-1, 0), (0, -1), (1, 0), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1))
+            for j in range(len(directions)):
+                d = directions[j]
+                possiblePin = ()
+                for i in range(1, 8):
+                    endRow = startRow + d[0] * i
+                    endCol = startCol + d[1] * i
+                    if 0 <= endRow < 8 and 0 <= endCol < 8:
+                        endPiece = self.board[endRow][endCol]
+                        if endPiece[0] == allyColour:
+                            if possiblePin == ():
+                                possiblePin = (endRow, endCol, d[0], d[1])
+                            else:
+                                break
+                        elif endPiece[0] == enemyColour:
+                            type = endPiece[1]
+                            if (0 <= j <= 3 and type == 'R') or \
+                                    (4 <= j <= 7 and type == 'B') or \
+                                    (i == 1 and type == 'p' and ((enemyColour == 'w' and 6 <= j <= 7) or (enemyColour == 'b' and 4 <= j <= 5))) or \
+                                    (type == 'Q') or (i == 1 and type == 'K'):
+                                if possiblePin == (): #no piece blocking, so check
+                                    inCheck = True
+                                    checks.append((endRow, endCol, d[0], d[1]))
+                                    break
+                                else: #piece blocking so pin
+                                    pins.append(possiblePin)
+                            else: #enemy piece not applying check
+                                break
+                        
+
     def inCheck(self):
         if self.whiteToMove:
             return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
@@ -94,6 +147,26 @@ class GameState():
                     piece = self.board[r][c][1]
                     self.moveFunctions[piece](r, c, moves)
         return moves
+    
+    def checkmate(self):
+        directions = [(-1, 0), (1, 0), (0, 1), (0, -1), (-1, 1), (-1, -1), (1, 1), (1, -1)]
+
+        if self.whiteToMove:
+            r, c = self.blackKingLocation
+            turnTake  = "w"
+        else:
+            r, c = self.whiteKingLocation
+            turnTake = "b"
+
+        for dr, dc in directions:
+            row, column = r + dr, c + dc
+
+            if 0 <= row < len(self.board) and 0 <= column < len(self.board):
+                if self.board[row][column] == "--" or self.board[row][column][0] == turnTake: 
+                    if self.squareUnderAttack(row, column) != True:
+                        return False
+            
+        return True
 
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:
@@ -205,6 +278,7 @@ class GameState():
             if 0 <= row < len(self.board) and 0 <= column < len(self.board):
                 if self.board[row][column] == "--" or self.board[row][column][0] == turnTake:
                     moves.append(Move((r, c), (row, column), self.board))
+                    print(str(row) + " " + str(column))
 
 class Move():
 
