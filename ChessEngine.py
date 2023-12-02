@@ -304,7 +304,6 @@ class GameState():
             if 0 <= row < len(self.board) and 0 <= column < len(self.board):
                 if self.board[row][column] == "--" or self.board[row][column][0] == turnTake:
                     moves.append(Move((r, c), (row, column), self.board))
-                    print(str(row) + " " + str(column))
 
 class Move():
 
